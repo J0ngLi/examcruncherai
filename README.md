@@ -1,50 +1,129 @@
-﻿# ExamCrunch AI (MVP)
+﻿# ExamCrunch AI (Production Beta)
 
-ExamCrunch AI helps students turn notes into:
-- Flashcards
-- Quiz questions
+ExamCrunch AI turns notes into:
 - A short summary
+- Flashcards
+- Multiple-choice quizzes with explanations
 - A 7-day revision plan
 
 ## Stack
 - Next.js (App Router)
 - TypeScript
 - Tailwind CSS
-- Supabase-ready auth/data setup
-- OpenAI API integration with mock fallback
+- Supabase (auth + database)
+- OpenAI API (server-side generation)
+- PayPal Subscriptions (monthly, optional yearly)
 
 ## Run locally
 
+1. Install dependencies
+
 ```bash
 npm install
+```
+
+2. Create `.env.local` from `.env.example`
+
+3. Start the app
+
+```bash
 npm run dev
 ```
 
-## Environment variables
+4. Visit [http://localhost:3000](http://localhost:3000)
 
-Copy `.env.example` to `.env.local` and fill in values when ready.
+## Required environment variables
 
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `OPENAI_API_KEY`
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+OPENAI_API_KEY=
+FREE_PLAN_LIMIT=3
+ADMIN_EMAILS=
+BETA_DISABLE_PAYMENTS=false
+PAYPAL_BASE_URL=https://api-m.sandbox.paypal.com
+PAYPAL_CLIENT_ID=
+PAYPAL_CLIENT_SECRET=
+PAYPAL_MONTHLY_PLAN_ID=
+PAYPAL_YEARLY_PLAN_ID=
+```
 
-If `OPENAI_API_KEY` is missing, the app returns realistic mock output so MVP flow still works.
+### Variable notes
+- `FREE_PLAN_LIMIT`: max revision sets for free users (server-side enforced).
+- `ADMIN_EMAILS`: comma-separated emails that bypass limits and are treated as Pro.
+- `BETA_DISABLE_PAYMENTS=true`: disables checkout immediately.
+- `PAYPAL_BASE_URL`:
+  - Sandbox: `https://api-m.sandbox.paypal.com`
+  - Live: `https://api-m.paypal.com`
+
+## Supabase setup
+
+1. Create a Supabase project.
+2. Open SQL Editor and run `supabase/schema.sql`.
+3. Add env vars:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+
+## OpenAI setup
+
+1. Create an OpenAI API key.
+2. Add `OPENAI_API_KEY`.
+3. Restart the dev server.
+
+## PayPal setup (exact dashboard requirements)
+
+1. Create a PayPal Business sandbox account and developer app.
+2. Set app credentials:
+   - Client ID -> `PAYPAL_CLIENT_ID`
+   - Secret -> `PAYPAL_CLIENT_SECRET`
+3. In PayPal Subscriptions, create at least one plan:
+   - Monthly plan ID -> `PAYPAL_MONTHLY_PLAN_ID`
+4. Optional: create yearly plan:
+   - Yearly plan ID -> `PAYPAL_YEARLY_PLAN_ID`
+5. Configure webhook URL in PayPal app settings:
+   - `https://<your-domain>/api/paypal/webhook`
+6. Subscribe to webhook events:
+   - `BILLING.SUBSCRIPTION.ACTIVATED`
+   - `BILLING.SUBSCRIPTION.UPDATED`
+   - `BILLING.SUBSCRIPTION.CANCELLED`
+   - `BILLING.SUBSCRIPTION.EXPIRED`
+   - `BILLING.SUBSCRIPTION.SUSPENDED`
+7. For production, switch to live credentials and live API base URL.
+
+## Auth, limits, and premium protection
+
+- Protected pages: `/dashboard` and `/revision-sets/*` require auth when Supabase is configured.
+- Revision APIs require bearer token and enforce ownership.
+- Free plan limits are enforced server-side in `POST /api/revision-sets`.
+- Pro/admin bypass free limits.
+
+## Billing flow
+
+- `POST /api/paypal/create-order` creates a PayPal subscription and returns approval URL.
+- PayPal redirects user to:
+  - `/billing/success`
+  - `/billing/cancelled`
+- `POST /api/paypal/capture-order` verifies subscription and upgrades user plan.
+- `POST /api/paypal/webhook` keeps plan status in sync from PayPal events.
+
+## Deploy on Vercel
+
+1. Push repo to GitHub.
+2. Import in Vercel.
+3. Set all env vars in Vercel settings.
+4. Deploy and configure custom domain.
+5. Set PayPal webhook URL to deployed domain.
 
 ## Main pages
-- `/` Landing page
-- `/auth` Sign up / login (Supabase-ready)
-- `/dashboard` Revision sets overview
-- `/revision-sets/new` Create set + generate materials
+- `/`
+- `/auth`
+- `/dashboard`
+- `/revision-sets/new`
 - `/revision-sets/[id]/flashcards`
 - `/revision-sets/[id]/quiz`
 - `/revision-sets/[id]/plan`
 - `/pricing`
-
-## Database schema
-
-See `supabase/schema.sql` for:
-- `users`
-- `revision_sets`
-- `flashcards`
-- `quiz_questions`
-- `revision_plans`
+- `/billing/success`
+- `/billing/cancelled`

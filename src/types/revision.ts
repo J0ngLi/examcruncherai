@@ -9,19 +9,20 @@ export type QuizQuestion = {
   question: string;
   options: string[];
   correctAnswer: string;
+  explanation: string;
 };
 
-export type RevisionDay = {
+export type RevisionPlanItem = {
   day: number;
-  focus: string;
-  tasks: string[];
+  task: string;
+  estimatedTime: string;
 };
 
-export type GeneratedMaterials = {
+export type GeneratedRevision = {
   summary: string;
   flashcards: Flashcard[];
   quiz: QuizQuestion[];
-  revision_plan: RevisionDay[];
+  revisionPlan: RevisionPlanItem[];
 };
 
 export type RevisionSet = {
@@ -31,7 +32,8 @@ export type RevisionSet = {
   topic: string;
   notes: string;
   createdAt: string;
-  materials: GeneratedMaterials;
+  summary: string;
+  materials: GeneratedRevision;
 };
 
 export type GenerateRequest = {
@@ -40,3 +42,5 @@ export type GenerateRequest = {
   topic: string;
   notes: string;
 };
+
+export type RevisionSetSummary = Pick<RevisionSet, "id" | "subject" | "topic" | "createdAt">;

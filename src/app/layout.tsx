@@ -5,8 +5,21 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ExamCrunch AI",
-  description: "Turn notes into flashcards, quizzes, and revision plans in seconds.",
+  metadataBase: new URL("https://examcrunch.ai"),
+  title: {
+    default: "ExamCrunch AI | Revision in Minutes",
+    template: "%s | ExamCrunch AI",
+  },
+  description:
+    "Turn GCSE, A-Level, and university notes into summaries, flashcards, quizzes, and 7-day revision plans in seconds.",
+  openGraph: {
+    title: "ExamCrunch AI",
+    description:
+      "Turn GCSE, A-Level, and university notes into summaries, flashcards, quizzes, and revision plans.",
+    url: "https://examcrunch.ai",
+    siteName: "ExamCrunch AI",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
