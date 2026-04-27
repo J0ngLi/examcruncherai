@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getServerSupabase } from "@/lib/supabase-server";
 import { getRequestUser } from "@/lib/server/auth";
 import { GeneratedRevision, RevisionSet } from "@/types/revision";

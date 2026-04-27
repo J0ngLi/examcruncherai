@@ -1,4 +1,4 @@
-﻿const paypalBaseUrl = process.env.PAYPAL_BASE_URL ?? "https://api-m.sandbox.paypal.com";
+const paypalBaseUrl = process.env.PAYPAL_BASE_URL ?? "https://api-m.sandbox.paypal.com";
 const paypalClientId = process.env.PAYPAL_CLIENT_ID;
 const paypalClientSecret = process.env.PAYPAL_CLIENT_SECRET;
 const paypalMonthlyPlanId = process.env.PAYPAL_MONTHLY_PLAN_ID;

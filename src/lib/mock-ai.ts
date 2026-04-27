@@ -1,4 +1,4 @@
-﻿import { GenerateRequest, GeneratedRevision, QuizQuestion } from "@/types/revision";
+import { GenerateRequest, GeneratedRevision, QuizQuestion } from "@/types/revision";
 
 function shuffle<T>(items: T[]): T[] {
   const result = [...items];

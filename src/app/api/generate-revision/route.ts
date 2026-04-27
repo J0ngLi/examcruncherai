@@ -1,4 +1,4 @@
-﻿import OpenAI from "openai";
+import OpenAI from "openai";
 import { NextRequest, NextResponse } from "next/server";
 import { buildMockMaterials } from "@/lib/mock-ai";
 import { GenerateRequest, GeneratedRevision, QuizQuestion } from "@/types/revision";

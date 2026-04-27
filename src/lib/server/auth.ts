@@ -1,4 +1,4 @@
-﻿import { NextRequest } from "next/server";
+import { NextRequest } from "next/server";
 import { getServerSupabase } from "@/lib/supabase-server";
 
 export type RequestUser = {

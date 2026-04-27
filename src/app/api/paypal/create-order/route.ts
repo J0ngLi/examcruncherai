@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getRequestUser } from "@/lib/server/auth";
 import { createPaypalSubscription, getPaypalAccessToken, getPaypalPlanId, hasPaypalConfig, isPaymentsDisabled } from "@/lib/server/paypal";
 
