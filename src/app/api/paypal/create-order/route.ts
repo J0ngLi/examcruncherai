@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRequestUser } from "@/lib/server/auth";
-import { createPaypalSubscription, getPaypalAccessToken, getPaypalPlanId, hasPaypalConfig, isPaymentsDisabled } from "@/lib/server/paypal";
+import { createPaypalSubscription, getAppBaseUrl, getPaypalAccessToken, getPaypalPlanId, hasPaypalConfig, isPaymentsDisabled } from "@/lib/server/paypal";
 
 export async function POST(request: NextRequest) {
   if (isPaymentsDisabled()) {
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: `PayPal ${selectedPlan} plan is not configured.` }, { status: 503 });
     }
 
-    const origin = new URL(request.url).origin;
+    const origin = getAppBaseUrl(new URL(request.url).origin);
     const accessToken = await getPaypalAccessToken();
 
     const subscription = (await createPaypalSubscription(

@@ -1,8 +1,28 @@
-const paypalBaseUrl = process.env.PAYPAL_BASE_URL ?? "https://api-m.sandbox.paypal.com";
+function normalizePaypalBaseUrl(rawUrl: string | undefined): string {
+  const fallback = "https://api-m.sandbox.paypal.com";
+  if (!rawUrl?.trim()) return fallback;
+
+  const trimmed = rawUrl.trim().replace(/\/+$/, "");
+  const lower = trimmed.toLowerCase();
+
+  // Accept common dashboard host mistakes and normalize to API hosts.
+  if (lower === "https://sandbox.paypal.com" || lower === "sandbox.paypal.com") {
+    return "https://api-m.sandbox.paypal.com";
+  }
+  if (lower === "https://paypal.com" || lower === "paypal.com" || lower === "https://www.paypal.com") {
+    return "https://api-m.paypal.com";
+  }
+
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+}
+
+const paypalBaseUrl = normalizePaypalBaseUrl(process.env.PAYPAL_BASE_URL);
 const paypalClientId = process.env.PAYPAL_CLIENT_ID;
 const paypalClientSecret = process.env.PAYPAL_CLIENT_SECRET;
 const paypalMonthlyPlanId = process.env.PAYPAL_MONTHLY_PLAN_ID;
 const paypalYearlyPlanId = process.env.PAYPAL_YEARLY_PLAN_ID;
+const appBaseUrl = process.env.APP_BASE_URL;
 
 export function isPaymentsDisabled(): boolean {
   return process.env.BETA_DISABLE_PAYMENTS === "true";
@@ -15,6 +35,13 @@ export function hasPaypalConfig(): boolean {
 export function getPaypalPlanId(plan: "monthly" | "yearly"): string | null {
   if (plan === "yearly") return paypalYearlyPlanId ?? null;
   return paypalMonthlyPlanId ?? null;
+}
+
+export function getAppBaseUrl(fallbackOrigin: string): string {
+  if (!appBaseUrl?.trim()) return fallbackOrigin;
+  const trimmed = appBaseUrl.trim().replace(/\/+$/, "");
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
 }
 
 export async function getPaypalAccessToken(): Promise<string> {

@@ -42,6 +42,7 @@ OPENAI_API_KEY=
 FREE_PLAN_LIMIT=3
 ADMIN_EMAILS=
 BETA_DISABLE_PAYMENTS=false
+APP_BASE_URL=
 PAYPAL_BASE_URL=https://api-m.sandbox.paypal.com
 PAYPAL_CLIENT_ID=
 PAYPAL_CLIENT_SECRET=
@@ -53,6 +54,7 @@ PAYPAL_YEARLY_PLAN_ID=
 - `FREE_PLAN_LIMIT`: max revision sets for free users (server-side enforced).
 - `ADMIN_EMAILS`: comma-separated emails that bypass limits and are treated as Pro.
 - `BETA_DISABLE_PAYMENTS=true`: disables checkout immediately.
+- `APP_BASE_URL`: optional canonical app URL used for PayPal return/cancel links (example: `https://www.examcrunchai.com`).
 - `PAYPAL_BASE_URL`:
   - Sandbox: `https://api-m.sandbox.paypal.com`
   - Live: `https://api-m.paypal.com`
